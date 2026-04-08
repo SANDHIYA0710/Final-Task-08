@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Expense Dashboard</title>
+
+<style>
+body {
+    font-family: 'Segoe UI';
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    margin: 0;
+    padding: 20px;
+}
+
+h2 {
+    text-align: center;
+    color: white;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card h3 {
+    color: #007bff;
+}
+
+.highlight {
+    color: red;
+    font-weight: bold;
+}
+
+.total {
+    color: green;
+    font-size: 20px;
+}
+
+.chart-box {
+    grid-column: span 3;
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+}
+
+.filter {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+input, button {
+    padding: 8px;
+    margin: 5px;
+}
+
+button {
+    background: #007bff;
+    color: white;
+    border: none;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2>Smart Expense Dashboard</h2>
+
+<div class="filter">
+<form method="get">
+<input name="category" placeholder="Category">
+<input type="date" name="date">
+<button>Filter</button>
+</form>
+</div>
+
+<div class="container">
+
+<!-- TOTAL -->
+<div class="card">
+<h3>Total Expense</h3>
+<p class="total">₹{{ summary.values()|sum }}</p>
+</div>
+
+<!-- HIGHEST -->
+<div class="card">
+<h3>Highest Expense</h3>
+<p class="highlight">
+{% if highest[0] != "No Data" %}
+₹{{highest[1]}} ({{highest[2]}})
+{% else %}
+No Data Available
+{% endif %}
+</p>
+</div>
+
+<!-- INSIGHT -->
+<div class="card">
+<h3>Smart Insight</h3>
+<p>{{insight}}</p>
+</div>
+
+<!-- 🆕 SPENDING LEVEL -->
+<div class="card">
+<h3>Spending Level</h3>
+<p>{{level}}</p>
+</div>
+
+<!-- BUDGET -->
+<div class="card">
+<h3>Budget Status</h3>
+<p>{{alert}}</p>
+</div>
+
+<!-- MONTHLY -->
+<div class="card">
+<h3>Monthly Report</h3>
+<ul>
+{% for k,v in monthly.items() %}
+<li>{{k}} : ₹{{v}}</li>
+{% endfor %}
+</ul>
+</div>
+
+<!-- CATEGORY -->
+<div class="card">
+<h3>Category Summary</h3>
+<ul>
+{% for k,v in summary.items() %}
+<li>{{k}} : ₹{{v}}</li>
+{% endfor %}
+</ul>
+</div>
+
+<!-- CHART -->
+<div class="chart-box">
+<canvas id="chart"></canvas>
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+new Chart(document.getElementById('chart'), {
+type: 'doughnut',
+data: {
+labels: {{ summary.keys()|list }},
+datasets: [{
+data: {{ summary.values()|list }},
+backgroundColor: ['#ff6384','#36a2eb','#ffce56','#4caf50','#9c27b0']
+}]
+}
+});
+</script>
+
+</body>
+</html>

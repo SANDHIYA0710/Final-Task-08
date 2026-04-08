@@ -1,0 +1,28 @@
+<h2>Smart Expense Manager</h2>
+
+<form action="/add_user" method="post">
+<input name="name" placeholder="Name" required>
+<button>Add User</button>
+</form>
+
+<form action="/add_expense" method="post">
+
+<select name="user_id">
+{% for u in users %}
+<option value="{{u[0]}}">{{u[1]}}</option>
+{% endfor %}
+</select>
+
+<input name="amount" placeholder="Amount">
+<input name="category" placeholder="Category">
+<input name="description" placeholder="Description">
+<input type="date" name="date">
+
+<button>Add Expense</button>
+</form>
+
+<ul>
+{% for u in users %}
+<li>{{u[1]}} - <a href="/dashboard/{{u[0]}}">Dashboard</a></li>
+{% endfor %}
+</ul>
